@@ -6,11 +6,13 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.liwy.mobile.easydb.annotation.Table;
+import com.liwy.mobile.easydb.annotation.utils.ClassUtils;
 import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +75,7 @@ public class EasyDB {
         if (cursor.moveToFirst()){
             int count = cursor.getCount();
             for (int i = 0; i < count; i++){
-                int id = cursor.getInt(cursor.getColumnIndex("_id"));
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 int age = cursor.getInt(cursor.getColumnIndex("age"));
                 User user = new User(id,name,age);
@@ -103,7 +105,7 @@ public class EasyDB {
         if (annotation != null){
             if (annotation instanceof Table){
                 Table table = (Table)annotation;
-                Logger.d("他的真实名称=" + table.value());
+                Logger.d(clazz.getName() + "的真实名称=" + table.value());
             }
         }
         return false;
@@ -114,8 +116,31 @@ public class EasyDB {
     }
 
 
-    public static void createStudent(Class clazz){
-
+    public static void createTable(Object obj){
+        String tableName = ClassUtils.getTableName(obj.getClass());
+        Field[] fields = obj.getClass().getDeclaredFields();
+        StringBuffer sb = new StringBuffer();
+        sb.append("create table " + tableName);
+        if (fields.length > 0){
+            sb.append("(");
+            for (Field field : fields){
+                if (field.getType() == Integer.TYPE || field.getType() == Integer.class){
+                    sb.append(field.getName() + " integer,");
+                }else if (field.getType() == String.class){
+                    sb.append(field.getName() + " text,");
+                }
+            }
+            String str = sb.toString();
+            sb = new StringBuffer(str.substring(0,str.length()-1));
+            sb.append(")");
+        }
+        try {
+            db.execSQL(sb.toString());
+            Logger.d("创建user表成功");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.d("表已存在");
+        }
     }
 
 

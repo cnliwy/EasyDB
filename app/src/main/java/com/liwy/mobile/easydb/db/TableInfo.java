@@ -4,6 +4,8 @@ import com.liwy.mobile.easydb.annotation.Table;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Created by liwy on 2017/4/18.
@@ -16,12 +18,16 @@ public class TableInfo {
         this.clazz = clazz;
     }
 
-    // 获取表名
-    public  String getTableName(){
-        Table annotation = (Table) clazz.getAnnotation(Table.class);
-        if (annotation == null || annotation.value().trim().length() == 0){
-           return clazz.getName().replace(".","_");
+
+
+    // test
+    public static List<String> parseParms(Class clazz){
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields.length > 0){
+            for (Field field : fields){
+                Logger.d(field.getName());
+            }
         }
-        return annotation.value();
+        return null;
     }
 }

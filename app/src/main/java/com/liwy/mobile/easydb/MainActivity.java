@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn2:
-                EasyDB.createTable();
+//                EasyDB.createTable();
+                EasyDB.createTable(new User(0,"liwy",18));
                 break;
             case R.id.btn3:
                 for (int i = 0; i < 4; i++){

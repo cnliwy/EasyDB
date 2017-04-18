@@ -1,9 +1,11 @@
 package com.liwy.mobile.easydb.bean;
 
+import com.liwy.mobile.easydb.annotation.Table;
+
 /**
  * Created by liwy on 2017/4/18.
  */
-
+@Table("user")
 public class User {
     public int id;
     private String name;
