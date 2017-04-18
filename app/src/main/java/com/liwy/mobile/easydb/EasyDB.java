@@ -5,10 +5,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.liwy.mobile.easydb.annotation.Table;
 import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,8 +97,19 @@ public class EasyDB {
         }
     }
 
-    public static void insertStudent(Student stu){
+    // 判断表是否存在
+    public static boolean isTableExist(Class clazz){
+        Annotation annotation = clazz.getAnnotation(Table.class);
+        if (annotation != null){
+            if (annotation instanceof Table){
+                Table table = (Table)annotation;
+                Logger.d("他的真实名称=" + table.value());
+            }
+        }
+        return false;
+    }
 
+    public static void insertStudent(Student stu){
 
     }
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn3;
     private Button btn4;
     private Button btn5;
+    private Button btn6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn3 = (Button)findViewById(R.id.btn3);
         btn4 = (Button)findViewById(R.id.btn4);
         btn5 = (Button)findViewById(R.id.btn5);
+        btn6 = (Button)findViewById(R.id.btn6);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
         btn4.setOnClickListener(this);
         btn5.setOnClickListener(this);
+        btn6.setOnClickListener(this);
     }
 
     @Override
@@ -69,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn5:
                 EasyDB.deleteAll();
+                break;
+            case R.id.btn6:
+                EasyDB.isTableExist(Student.class);
                 break;
         }
     }

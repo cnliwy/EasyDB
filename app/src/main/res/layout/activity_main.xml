@@ -57,6 +57,15 @@
         android:textColor="#ffffff"
         android:text="清空数据"/>
 
+    <Button
+        android:id="@+id/btn6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_margin="10dp"
+        android:textColor="#ffffff"
+        android:text="注解测试"/>
+
 
 
 </LinearLayout>
