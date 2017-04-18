@@ -1,4 +1,4 @@
-package com.liwy.mobile.easydb;
+package com.liwy.mobile.easydb.bean;
 
 /**
  * Created by liwy on 2017/4/18.

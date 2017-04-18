@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.liwy.mobile.easydb.EasyDB.DATABASE_FILENAME;

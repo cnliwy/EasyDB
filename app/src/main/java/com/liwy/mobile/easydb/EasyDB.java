@@ -1,17 +1,16 @@
 
 package com.liwy.mobile.easydb;
 
-import android.content.ContentUris;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.liwy.mobile.easydb.bean.Student;
+import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liwy on 2017/4/18.
@@ -94,6 +93,16 @@ public class EasyDB {
             e.printStackTrace();
             Logger.d("清理失败");
         }
+    }
+
+    public static void insertStudent(Student stu){
+
+
+    }
+
+
+    public static void createStudent(Class clazz){
+
     }
 
 
