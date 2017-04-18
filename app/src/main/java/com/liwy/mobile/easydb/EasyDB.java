@@ -1,3 +1,4 @@
+
 package com.liwy.mobile.easydb;
 
 import android.content.ContentUris;
@@ -17,6 +18,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
  */
 
 public class EasyDB {
+    // 数据库路径和名称
     public static final String DATABASE_PATH = android.os.Environment
             .getExternalStorageDirectory().getAbsolutePath()
             + "/liwy/";
