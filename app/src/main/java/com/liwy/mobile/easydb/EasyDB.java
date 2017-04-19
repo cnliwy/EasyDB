@@ -193,6 +193,10 @@ public class EasyDB {
         }
     }
 
+    /**
+     * 通过注解的方式新增数据
+     * @param obj
+     */
     public static void insertByAnnotation(Object obj){
         List<KeyValue> keyValues = TableInfo.getKeyValues(obj);
         if (keyValues.size() > 0){
@@ -202,10 +206,8 @@ public class EasyDB {
                 sql.append(keyValue.getKey() + ",");
                 values.append(keyValue.getValue() + ",");
             }
-            sql = new StringBuffer(sql.substring(0,sql.length()-1));
             values = values.deleteCharAt(values.length()-1);
-            values.append(")");
-            sql.append(")").append(values);
+            sql = sql.deleteCharAt(sql.length()-1).append(")").append(values.append(")"));
 
             db.execSQL(sql.toString());
             Logger.d("数据插入成功");
