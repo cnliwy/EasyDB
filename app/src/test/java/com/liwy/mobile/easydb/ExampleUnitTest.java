@@ -1,5 +1,7 @@
 package com.liwy.mobile.easydb;
 
+import com.liwy.mobile.easydb.annotation.Table;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,5 +15,15 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void testSB()throws Exception{
+        StringBuffer sb = new StringBuffer();
+        sb.append("admin");
+        System.out.println(sb.length());
+        System.out.println(sb.substring(0,sb.length()-3));
+        sb = new StringBuffer(sb.substring(0,sb.length()-3));
+        System.out.println(sb.toString());
     }
 }

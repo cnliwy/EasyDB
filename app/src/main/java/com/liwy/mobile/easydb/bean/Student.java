@@ -16,6 +16,9 @@ public class Student {
 
     private String sex;
 
+    public Student() {
+    }
+
     public Student(int _id, String name, String sex) {
         this._id = _id;
         this.sduName = name;
@@ -25,7 +28,9 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" +
-                "name='" + sduName + '\'' +
+                "_id=" + _id +
+                ", sduName='" + sduName + '\'' +
+                ", sex='" + sex + '\'' +
                 '}';
     }
 
@@ -37,12 +42,12 @@ public class Student {
         this._id = _id;
     }
 
-    public String getName() {
+    public String getSduName() {
         return sduName;
     }
 
-    public void setName(String name) {
-        this.sduName = name;
+    public void setSduName(String sduName) {
+        this.sduName = sduName;
     }
 
     public String getSex() {

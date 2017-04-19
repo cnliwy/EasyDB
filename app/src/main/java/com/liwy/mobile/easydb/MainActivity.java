@@ -61,23 +61,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn2:
 //                EasyDB.createTable();
-                EasyDB.createTable(new User(0,"liwy",18));
+                EasyDB.create(User.class);
+//                EasyDB.create(Student.class);
                 break;
             case R.id.btn3:
-                for (int i = 0; i < 4; i++){
-                    EasyDB.insertData("name" + i, i);
-                }
+//                for (int i = 0; i < 4; i++){
+//                    EasyDB.insertData("name" + i, i);
+                    EasyDB.insert(new User(666,"liwy",25));
+//                    EasyDB.insert(new Student(233,"zhangsan","男"));
+
+//                }
                 break;
             case R.id.btn4:
-                List<User> users = EasyDB.findAll();
-                contentTv.setText(users.toString());
+//                List<Student> datas = EasyDB.findAll(Student.class);
+                List<User> datas = EasyDB.findAll(User.class);
+                contentTv.setText(datas.get(0).toString());
                 break;
             case R.id.btn5:
                 EasyDB.deleteAll();
                 break;
             case R.id.btn6:
-                EasyDB.isTableExist(Student.class);
+                EasyDB.drop(Student.class);
                 break;
+
         }
     }
 

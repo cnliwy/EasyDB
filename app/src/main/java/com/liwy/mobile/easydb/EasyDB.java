@@ -4,17 +4,23 @@ package com.liwy.mobile.easydb;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 import com.liwy.mobile.easydb.annotation.Table;
 import com.liwy.mobile.easydb.annotation.utils.ClassUtils;
+import com.liwy.mobile.easydb.annotation.utils.FieldUtils;
 import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by liwy on 2017/4/18.
@@ -24,7 +30,7 @@ public class EasyDB {
     // 数据库路径和名称
     public static final String DATABASE_PATH = android.os.Environment
             .getExternalStorageDirectory().getAbsolutePath()
-            + "/liwy/";
+            + "/aliwy/";
     public static final String DATABASE_FILENAME = DATABASE_PATH + "easy.db";
 
 
@@ -111,14 +117,13 @@ public class EasyDB {
         return false;
     }
 
-    public static void insertStudent(Student stu){
-
-    }
-
-
-    public static void createTable(Object obj){
-        String tableName = ClassUtils.getTableName(obj.getClass());
-        Field[] fields = obj.getClass().getDeclaredFields();
+    /**
+     * 创建表
+     * @param clazz
+     */
+    public static void create(Class clazz){
+        String tableName = ClassUtils.getTableName(clazz);
+        Field[] fields = clazz.getDeclaredFields();
         StringBuffer sb = new StringBuffer();
         sb.append("create table " + tableName);
         if (fields.length > 0){
@@ -130,8 +135,7 @@ public class EasyDB {
                     sb.append(field.getName() + " text,");
                 }
             }
-            String str = sb.toString();
-            sb = new StringBuffer(str.substring(0,str.length()-1));
+            sb = new StringBuffer(sb.substring(0,sb.length()-1));
             sb.append(")");
         }
         try {
@@ -141,6 +145,110 @@ public class EasyDB {
             e.printStackTrace();
             Logger.d("表已存在");
         }
+    }
+
+    /**
+     * 插入表
+     * @param obj
+     */
+    public static void insert(Object obj){
+        try {
+            String tableName = ClassUtils.getTableName(obj.getClass());
+            Field[] fields = obj.getClass().getDeclaredFields();
+            StringBuffer sql = new StringBuffer();
+            if (fields.length > 0){
+                sql.append("insert into " + tableName + "(");
+                Logger.d("属性的个数：" + fields.length);
+                for (Field field : fields){
+                    if (field.getName().equals("$change") || field.getName().equals("serialVersionUID")){
+                        continue;
+                    }
+                    sql.append(field.getName() + ",");
+                }
+                sql = new StringBuffer(sql.substring(0,sql.length()-1));
+                sql.append(") values(");
+                for (Field field : fields){
+                    if (field.getName().equals("$change") || field.getName().equals("serialVersionUID")){
+                        Logger.d(field.getName() + "的值=" + field.get(obj) + " 被跳过了");
+                        continue;
+                    }
+                    field.setAccessible(true);
+                    if (field.getType() == String.class){
+                        sql.append("'" + field.get(obj) + "',");
+                    }else{
+                        sql.append(field.get(obj) + ",");
+                    }
+
+                }
+                sql = new StringBuffer(sql.substring(0,sql.length()-1));
+                sql.append(")");
+                db.execSQL(sql.toString());
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (SQLiteException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static <T> List<T> findAll(Class<T> clazz){
+        List<T> list = new ArrayList<T>();
+        Field[] fields = clazz.getDeclaredFields();
+        String sql = "select * from " + ClassUtils.getTableName(clazz);
+        Cursor cursor = db.rawQuery(sql,null);
+        if (cursor.moveToFirst()){
+            int count = cursor.getCount();
+            for (int i = 0; i < count; i++){
+                try {
+                    Object obj = clazz.newInstance();
+                    for (Field field : fields){
+                        if (field.getName().equals("$change") || field.getName().equals("serialVersionUID")){
+                            continue;
+                        }
+                        Method method = FieldUtils.getSetMethodByField(clazz,field);
+                        if (field.getType() == String.class){
+                            String value = cursor.getString(cursor.getColumnIndex(field.getName()));
+                            FieldUtils.setFieldValue(obj,field,value);
+                        }else if (field.getType() == Integer.class || field.getType() == Integer.TYPE){
+                            int value = cursor.getInt(cursor.getColumnIndex(field.getName()));
+                            FieldUtils.setFieldValue(obj,field,value);
+                        }
+
+                        list.add((T)obj);
+                    }
+                    if (!cursor.isLast())cursor.moveToNext();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 删除此条数据
+     * @param obj
+     */
+    public static void delete(Object obj){
+
+    }
+
+    public static void deleteAll(Class clazz){
+        db.delete(ClassUtils.getTableName(clazz),null,null);
+        System.out.println("删除成功");
+    }
+
+    /**
+     * 删除表
+     * @param clazz
+     */
+    public static void drop(Class clazz){
+        String sql = "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
+        db.execSQL(sql);
+        Logger.d("删除表成功");
     }
 
 
