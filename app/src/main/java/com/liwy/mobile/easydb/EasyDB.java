@@ -11,6 +11,8 @@ import com.liwy.mobile.easydb.annotation.utils.ClassUtils;
 import com.liwy.mobile.easydb.annotation.utils.FieldUtils;
 import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
+import com.liwy.mobile.easydb.table.KeyValue;
+import com.liwy.mobile.easydb.table.TableInfo;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -188,6 +190,25 @@ public class EasyDB {
             e.printStackTrace();
         } catch (SQLiteException e){
             e.printStackTrace();
+        }
+    }
+
+    public static void insertByAnnotation(Object obj){
+        List<KeyValue> keyValues = TableInfo.getKeyValues(obj);
+        if (keyValues.size() > 0){
+            StringBuffer sql = new StringBuffer("insert into "+ ClassUtils.getTableName(obj.getClass()) + "(");
+            StringBuffer values = new StringBuffer(" values(");
+            for (KeyValue keyValue : keyValues){
+                sql.append(keyValue.getKey() + ",");
+                values.append(keyValue.getValue() + ",");
+            }
+            sql = new StringBuffer(sql.substring(0,sql.length()-1));
+            values = values.deleteCharAt(values.length()-1);
+            values.append(")");
+            sql.append(")").append(values);
+
+            db.execSQL(sql.toString());
+            Logger.d("数据插入成功");
         }
     }
 

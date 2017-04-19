@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn3:
 //                for (int i = 0; i < 4; i++){
 //                    EasyDB.insertData("name" + i, i);
-                    EasyDB.insert(new User(666,"liwy",25));
+                    EasyDB.insertByAnnotation(new User(2333,"tom",25));
 //                    EasyDB.insert(new Student(233,"zhangsan","男"));
 
 //                }
@@ -75,7 +75,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn4:
 //                List<Student> datas = EasyDB.findAll(Student.class);
                 List<User> datas = EasyDB.findAll(User.class);
-                contentTv.setText(datas.get(0).toString());
+                if (datas != null && datas.size() > 0) {
+                    contentTv.setText(datas.get(0).toString());
+                }else {
+                    contentTv.setText("啥都没查到");
+                }
                 break;
             case R.id.btn5:
                 EasyDB.deleteAll();

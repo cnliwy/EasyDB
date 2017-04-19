@@ -85,28 +85,38 @@ public class TableInfo {
         if (fields.size() > 0){
             for (Field field : fields){
                 Annotation[] annotations = field.getDeclaredAnnotations();
+                boolean isRealColumn = true;
+                String columnName = "";
                 for (Annotation annotation : annotations){
                     if (annotation instanceof Column){
                         Column column = (Column)annotation;
                         if (column.require()){
-                            try {
-                                String fieldName = column.value();
-                                if (TextUtils.isEmpty(fieldName)){
-                                    fieldName = field.getName();
-                                }
-                                KeyValue keyValue = new KeyValue(fieldName,field.get(obj));
-                                keyValues.add(keyValue);
-                                break;
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
+                            columnName = column.value();
+                            if (TextUtils.isEmpty(columnName)){
+                                columnName = field.getName();
                             }
+                        }else{
+                            isRealColumn = false;
                         }
+                        break;
                     }
                 }
-            }
-            return keyValues;
-        }
+                // 除了被标注为required=false的情况下，其余字段均为表字段
+                if (isRealColumn){
+                    try {
+                        if (!field.isAccessible())field.setAccessible(true);
+                        if (TextUtils.isEmpty(columnName)){
+                            columnName = field.getName();
+                        }
+                        KeyValue keyValue = new KeyValue(columnName,field.get(obj));
+                        keyValues.add(keyValue);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+            }
+        }
         return keyValues;
     }
 
