@@ -5,30 +5,29 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.liwy.mobile.easydb.annotation.Table;
-import com.liwy.mobile.easydb.annotation.utils.ClassUtils;
-import com.liwy.mobile.easydb.annotation.utils.FieldUtils;
-import com.liwy.mobile.easydb.bean.Student;
+import com.liwy.mobile.easydb.utils.ClassUtils;
+import com.liwy.mobile.easydb.utils.FieldUtils;
 import com.liwy.mobile.easydb.bean.User;
 import com.liwy.mobile.easydb.table.KeyValue;
 import com.liwy.mobile.easydb.table.TableInfo;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by liwy on 2017/4/18.
  */
 
 public class EasyDB {
+    private static final String TAG = "Debug SQL";
+    private static boolean isDebug = true;//是否输出sql语句
     // 数据库路径和名称
     public static final String DATABASE_PATH = android.os.Environment
             .getExternalStorageDirectory().getAbsolutePath()
@@ -272,6 +271,12 @@ public class EasyDB {
         String sql = "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
         db.execSQL(sql);
         Logger.d("删除表成功");
+    }
+
+    private void debugSql(String sql) {
+        if(isDebug) {
+            Log.d(TAG,">>>>>>  " + sql);
+        }
     }
 
 

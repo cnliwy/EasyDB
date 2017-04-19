@@ -1,4 +1,4 @@
-package com.liwy.mobile.easydb.annotation.utils;
+package com.liwy.mobile.easydb.utils;
 
 import com.liwy.mobile.easydb.annotation.Table;
 

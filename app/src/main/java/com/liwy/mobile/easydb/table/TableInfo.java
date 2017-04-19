@@ -3,16 +3,12 @@ package com.liwy.mobile.easydb.table;
 import android.text.TextUtils;
 
 import com.liwy.mobile.easydb.annotation.Column;
-import com.liwy.mobile.easydb.annotation.utils.FieldUtils;
-import com.orhanobut.logger.Logger;
+import com.liwy.mobile.easydb.utils.FieldUtils;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liwy on 2017/4/18.
