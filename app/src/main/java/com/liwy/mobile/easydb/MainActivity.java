@@ -61,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn2:
 //                EasyDB.createTable();
-                EasyDB.create(User.class);
+                EasyDB.createTable(User.class);
 //                EasyDB.create(Student.class);
                 break;
             case R.id.btn3:
 //                for (int i = 0; i < 4; i++){
 //                    EasyDB.insertData("name" + i, i);
-                    EasyDB.insertByAnnotation(new User(2333,"tom",25));
+                    EasyDB.insert(new User(2333,"tom",25));
 //                    EasyDB.insert(new Student(233,"zhangsan","男"));
 
 //                }

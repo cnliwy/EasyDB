@@ -124,7 +124,7 @@ public class EasyDB {
      * 创建表
      * @param clazz
      */
-    public static void create(Class clazz){
+    public static void createDebug(Class clazz){
         String tableName = ClassUtils.getTableName(clazz);
         Field[] fields = clazz.getDeclaredFields();
         StringBuffer sb = new StringBuffer();
@@ -151,10 +151,21 @@ public class EasyDB {
     }
 
     /**
+     * 创建表
+     * @param clazz
+     */
+    public static void createTable(Class clazz){
+        SqlInfo sqlInfo = SqlUtils.createTable(clazz);
+        db.execSQL(sqlInfo.getSql());
+        debugSql(sqlInfo.getSql());
+
+    }
+
+    /**
      * 插入表
      * @param obj
      */
-    public static void insert(Object obj){
+    public static void insertDebug(Object obj){
         try {
             String tableName = ClassUtils.getTableName(obj.getClass());
             Field[] fields = obj.getClass().getDeclaredFields();
@@ -198,7 +209,7 @@ public class EasyDB {
      * 通过注解的方式新增数据
      * @param obj
      */
-    public static void insertByAnnotation(Object obj){
+    public static void insert(Object obj){
         SqlInfo sqlInfo = SqlUtils.insert(obj);
         if (sqlInfo != null) {
             debugSql(sqlInfo.getSql());
@@ -263,7 +274,7 @@ public class EasyDB {
     public static void drop(Class clazz){
         String sql = "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
         db.execSQL(sql);
-        Logger.d("删除表成功");
+        debugSql(sql);
     }
 
     private static void debugSql(String sql) {
