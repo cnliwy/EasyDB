@@ -8,11 +8,13 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.liwy.mobile.easydb.annotation.Table;
+import com.liwy.mobile.easydb.table.SqlInfo;
 import com.liwy.mobile.easydb.utils.ClassUtils;
 import com.liwy.mobile.easydb.utils.FieldUtils;
 import com.liwy.mobile.easydb.bean.User;
 import com.liwy.mobile.easydb.table.KeyValue;
 import com.liwy.mobile.easydb.table.TableInfo;
+import com.liwy.mobile.easydb.utils.SqlUtils;
 import com.orhanobut.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -197,19 +199,10 @@ public class EasyDB {
      * @param obj
      */
     public static void insertByAnnotation(Object obj){
-        List<KeyValue> keyValues = TableInfo.getKeyValues(obj);
-        if (keyValues.size() > 0){
-            StringBuffer sql = new StringBuffer("insert into "+ ClassUtils.getTableName(obj.getClass()) + "(");
-            StringBuffer values = new StringBuffer(" values(");
-            for (KeyValue keyValue : keyValues){
-                sql.append(keyValue.getKey() + ",");
-                values.append(keyValue.getValue() + ",");
-            }
-            values = values.deleteCharAt(values.length()-1);
-            sql = sql.deleteCharAt(sql.length()-1).append(")").append(values.append(")"));
-
-            db.execSQL(sql.toString());
-            Logger.d("数据插入成功");
+        SqlInfo sqlInfo = SqlUtils.insert(obj);
+        if (sqlInfo != null) {
+            debugSql(sqlInfo.getSql());
+            db.execSQL(sqlInfo.getSql(), sqlInfo.getValues());
         }
     }
 
@@ -273,7 +266,7 @@ public class EasyDB {
         Logger.d("删除表成功");
     }
 
-    private void debugSql(String sql) {
+    private static void debugSql(String sql) {
         if(isDebug) {
             Log.d(TAG,">>>>>>  " + sql);
         }
