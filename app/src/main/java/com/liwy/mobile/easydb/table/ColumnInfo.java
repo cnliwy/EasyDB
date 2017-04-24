@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Created by admin on 2017/4/18.
+ * Created by liwy on 2017/4/18.
  */
 
-public class FieldInfo {
+public class ColumnInfo {
     private Object value;
     private String fieldName;
     private String column;

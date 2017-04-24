@@ -1,5 +1,7 @@
 package com.liwy.mobile.easydb.bean;
 
+import com.liwy.mobile.easydb.annotation.Column;
+import com.liwy.mobile.easydb.annotation.Id;
 import com.liwy.mobile.easydb.annotation.Table;
 
 /**
@@ -7,7 +9,9 @@ import com.liwy.mobile.easydb.annotation.Table;
  */
 @Table("user")
 public class User {
+    @Id(value = "_id")
     public int id;
+    @Column(value = "name")
     private String name;
     private int age;
 
@@ -23,7 +27,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "idInfo=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';

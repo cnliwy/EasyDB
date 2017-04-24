@@ -10,17 +10,27 @@ public class SqlInfo {
     private String sql;
     private LinkedList<Object> dataList;
 
-    public SqlInfo() {
-        dataList = new LinkedList<Object>();
+    /**
+     * 添加数据
+     * @param obj
+     */
+    public void addValue(Object obj)
+    {
+        this.dataList.add(obj);
     }
 
+    /**
+     * 获取数据数组
+     * @return
+     */
     public Object[] getValues(){
         return dataList != null ? dataList.toArray(): null;
     }
 
-    public void addObject(Object obj){
-        this.dataList.add(obj);
+    public SqlInfo() {
+        dataList = new LinkedList<Object>();
     }
+
 
     public String getSql() {
         return sql;

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn3:
 //                for (int i = 0; i < 4; i++){
 //                    EasyDB.insertData("name" + i, i);
-                    EasyDB.insert(new User(2333,"tom",25));
+                    EasyDB.insert(new User(12,"tom",25));
 //                    EasyDB.insert(new Student(233,"zhangsan","男"));
 
 //                }
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EasyDB.deleteAll();
                 break;
             case R.id.btn6:
-                EasyDB.drop(Student.class);
+                EasyDB.drop(User.class);
                 break;
 
         }

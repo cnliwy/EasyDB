@@ -64,7 +64,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="注解测试"/>
+        android:text="删除表"/>
 
 
 

@@ -140,6 +140,7 @@ public class FieldUtils {
         return null;
     }
 
+
     /**
      * 获取参数的值
      * @param obj 实例对象
@@ -154,6 +155,12 @@ public class FieldUtils {
         Method method = getGetMethodByFieldName(obj.getClass(),fieldName);
         return invoke(obj,method);
     }
+
+    public static KeyValue getKeyValue(Object obj,Field field,String columnName){
+        Object object = getFieldValue(obj,field);
+        return new KeyValue(columnName,object);
+    }
+    /**
 
     /**
      * 设置参数的值

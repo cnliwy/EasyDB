@@ -1,6 +1,16 @@
 package com.liwy.mobile.easydb.utils;
 
+import android.text.TextUtils;
+
+import com.liwy.mobile.easydb.annotation.Column;
 import com.liwy.mobile.easydb.annotation.Table;
+import com.liwy.mobile.easydb.table.ColumnInfo;
+import com.liwy.mobile.easydb.table.KeyValue;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by admin on 2017/4/18.
@@ -15,4 +25,51 @@ public class ClassUtils {
         }
         return annotation.value();
     }
+
+
+
+    /**
+     * 获取用于数据库操作的键值对
+     * @return
+     */
+//    public static List<KeyValue> getKeyValues(Object obj){
+//        List<KeyValue> keyValues = new ArrayList<KeyValue>();
+//        List<Field> fields = FieldUtils.getClassFields(obj.getClass());
+//        if (fields.size() > 0){
+//            for (Field field : fields){
+//                Annotation[] annotations = field.getDeclaredAnnotations();
+//                boolean isRealColumn = true;
+//                String columnName = "";
+//                for (Annotation annotation : annotations){
+//                    if (annotation instanceof Column){
+//                        Column column = (Column)annotation;
+//                        if (column.require()){
+//                            columnName = column.value();
+//                            if (TextUtils.isEmpty(columnName)){
+//                                columnName = field.getName();
+//                            }
+//                        }else{
+//                            isRealColumn = false;
+//                        }
+//                        break;
+//                    }
+//                }
+//                // 除了被标注为required=false的情况下，其余字段均为表字段
+//                if (isRealColumn){
+//                    try {
+//                        if (!field.isAccessible())field.setAccessible(true);
+//                        if (TextUtils.isEmpty(columnName)){
+//                            columnName = field.getName();
+//                        }
+//                        KeyValue keyValue = new KeyValue(columnName,field.get(obj));
+//                        keyValues.add(keyValue);
+//                    } catch (IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            }
+//        }
+//        return keyValues;
+//    }
 }

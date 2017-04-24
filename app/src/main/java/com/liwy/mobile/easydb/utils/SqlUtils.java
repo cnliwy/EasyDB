@@ -1,5 +1,8 @@
 package com.liwy.mobile.easydb.utils;
 
+import com.liwy.mobile.easydb.EasyDB;
+import com.liwy.mobile.easydb.table.ColumnInfo;
+import com.liwy.mobile.easydb.table.IdInfo;
 import com.liwy.mobile.easydb.table.KeyValue;
 import com.liwy.mobile.easydb.table.SqlInfo;
 import com.liwy.mobile.easydb.table.TableInfo;
@@ -13,28 +16,30 @@ import java.util.List;
 
 public class SqlUtils {
 
-    public static SqlInfo createTable(Class clazz){
-        SqlInfo sqlInfo = new SqlInfo();
-        String tableName = ClassUtils.getTableName(clazz);
+    public static String createTable(Class clazz){
+        TableInfo tableInfo = TableInfo.get(clazz);
+        String tableName = tableInfo.getTableName();
 
-
-        Field[] fields = clazz.getDeclaredFields();
         StringBuffer sb = new StringBuffer();
         sb.append("create table if not exists " + tableName);
-        if (fields.length > 0) {
-            sb.append("(");
-            for (Field field : fields) {
-//                if (field.getType() == Integer.TYPE || field.getType() == Integer.class) {
-                    sb.append( "\"" + field.getName() + "\",");
-//                } else if (field.getType() == String.class) {
-//                    sb.append(field.getName() + " text,");
-//                }
+        sb.append(" ( ");
+
+        if (tableInfo.getIdInfo() != null){
+            IdInfo idInfo = tableInfo.getIdInfo();
+            if (idInfo.getDataType() == Integer.TYPE || idInfo.getDataType() == Integer.class){
+                sb.append("\"").append(idInfo.getColumn()).append("\" ").append("INTEGER PRIMARY KEY AUTOINCREMENT,");
+            }else if (idInfo.getDataType() == String.class){
+                sb.append("\"").append(idInfo.getColumn()).append("\" ").append("TEXT PRIMARY KEY,");
             }
-            sb = new StringBuffer(sb.substring(0, sb.length() - 1));
-            sb.append(")");
-            sqlInfo.setSql(sb.toString());
         }
-        return sqlInfo;
+        List<ColumnInfo> columnInfos = tableInfo.getColumns();
+        for (ColumnInfo column : columnInfos){
+            sb.append("\"").append(column.getColumn()).append("\",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(")");
+
+        return sb.toString();
     }
 
     /**
@@ -43,7 +48,8 @@ public class SqlUtils {
      * @return
      */
     public static SqlInfo insert(Object entity){
-        List<KeyValue> keyValues = TableInfo.getKeyValues(entity);
+        TableInfo tableInfo = TableInfo.get(entity);
+        List<KeyValue> keyValues = tableInfo.getKeyValues();
         if (keyValues.size() > 0) {
             StringBuffer sql = new StringBuffer("insert into " + ClassUtils.getTableName(entity.getClass()) + "(");
             StringBuffer values = new StringBuffer(" values(");
@@ -51,10 +57,10 @@ public class SqlUtils {
             for (KeyValue keyValue : keyValues) {
                 sql.append(keyValue.getKey() + ",");
                 values.append("?,");
-                sqlInfo.addObject(keyValue.getValue());
+                sqlInfo.addValue(keyValue.getValue());
             }
-            values = values.deleteCharAt(values.length() - 1);
-            sql = sql.deleteCharAt(sql.length() - 1).append(")").append(values.append(")"));
+            values.deleteCharAt(values.length() - 1);
+            sql.deleteCharAt(sql.length() - 1).append(")").append(values.append(")"));
             sqlInfo.setSql(sql.toString());
             return sqlInfo;
         }

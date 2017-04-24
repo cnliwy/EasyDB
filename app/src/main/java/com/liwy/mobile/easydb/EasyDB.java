@@ -84,7 +84,7 @@ public class EasyDB {
         if (cursor.moveToFirst()){
             int count = cursor.getCount();
             for (int i = 0; i < count; i++){
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                int id = cursor.getInt(cursor.getColumnIndex("idInfo"));
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 int age = cursor.getInt(cursor.getColumnIndex("age"));
                 User user = new User(id,name,age);
@@ -155,14 +155,14 @@ public class EasyDB {
      * @param clazz
      */
     public static void createTable(Class clazz){
-        SqlInfo sqlInfo = SqlUtils.createTable(clazz);
-        db.execSQL(sqlInfo.getSql());
-        debugSql(sqlInfo.getSql());
+        String sql = SqlUtils.createTable(clazz);
+        db.execSQL(sql);
+        debugSql(sql);
 
     }
 
     /**
-     * 插入表
+     * 插入数据（原理测试）
      * @param obj
      */
     public static void insertDebug(Object obj){
@@ -277,7 +277,7 @@ public class EasyDB {
         debugSql(sql);
     }
 
-    private static void debugSql(String sql) {
+    public static void debugSql(String sql) {
         if(isDebug) {
             Log.d(TAG,">>>>>>  " + sql);
         }
