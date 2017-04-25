@@ -8,6 +8,7 @@ import com.liwy.mobile.easydb.table.SqlInfo;
 import com.liwy.mobile.easydb.table.TableInfo;
 
 import java.lang.reflect.Field;
+import java.security.Key;
 import java.util.List;
 
 /**
@@ -16,6 +17,11 @@ import java.util.List;
 
 public class SqlUtils {
 
+    /**
+     * 创建表语句
+     * @param clazz
+     * @return
+     */
     public static String createTable(Class clazz){
         TableInfo tableInfo = TableInfo.get(clazz);
         String tableName = tableInfo.getTableName();
@@ -68,11 +74,67 @@ public class SqlUtils {
     }
 
     /**
+     * 清空表数据语句
+     * @param clazz
+     * @return
+     */
+    public static String deleteAll(Class clazz){
+        return "delete table " + ClassUtils.getTableName(clazz);
+    }
+
+    /**
+     * 根据表id删除数据
+     * @param entity
+     * @return
+     */
+    public static String deleteById(Object entity){
+        TableInfo tableInfo = TableInfo.get(entity);
+        if (tableInfo.idInfo == null)return null;
+        StringBuffer sql = new StringBuffer();
+        if (tableInfo.idInfo.getDataType() == Integer.class || tableInfo.idInfo.getDataType() == Integer.TYPE){
+            sql.append("delete from ").append(ClassUtils.getTableName(entity.getClass())).append(" where ").append(tableInfo.getIdInfo().getColumn()).append(" = ").append((tableInfo.getIdInfo().getValue(entity)));
+        }else{
+            sql.append("delete from ").append(ClassUtils.getTableName(entity.getClass())).append(" where ")
+                    .append(tableInfo.getIdInfo().getColumn()).append(" = \"").append((tableInfo.getIdInfo().getValue(entity)))
+            .append("\"");
+        }
+        return sql.toString();
+    }
+
+    /**
      * 删除表语句
      * @param clazz
      * @return
      */
-    public static String dropTable(Class clazz){
-        return "delete table " + ClassUtils.getTableName(clazz);
+    public static String drop(Class clazz){
+        return "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
     }
+
+    public static String findAll(Class clazz){
+        return "select * from " + ClassUtils.getTableName(clazz);
+    }
+
+    public static String findById(){
+        return "";
+    }
+
+    public static SqlInfo updateById(Object entity){
+        TableInfo table = TableInfo.get(entity);
+        if (table.idInfo == null)return null;
+        SqlInfo sqlInfo = new SqlInfo();
+        List<KeyValue> keyValues = table.getKeyValues();
+        StringBuffer sql = new StringBuffer();
+        sql.append("update ").append(table.getTableName()).append(" set ");
+        for (KeyValue keyValue : keyValues){
+            if (keyValue.getKey().equals(table.getIdInfo().getColumn()))continue;
+            sql.append(keyValue.getKey()).append(" = ?,");
+            sqlInfo.addValue(keyValue.getValue());
+        }
+        sql.deleteCharAt(sql.length() - 1).append(" where ").append(table.getIdInfo().getColumn()).append(" = ?");
+        sqlInfo.addValue(FieldUtils.getFieldValue(entity,table.getIdInfo().getField()));
+        sqlInfo.setSql(sql.toString());
+        return sqlInfo;
+    }
+
+
 }

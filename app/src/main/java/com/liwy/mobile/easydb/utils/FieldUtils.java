@@ -1,5 +1,6 @@
 package com.liwy.mobile.easydb.utils;
 
+import com.liwy.mobile.easydb.annotation.Column;
 import com.liwy.mobile.easydb.table.KeyValue;
 
 import java.lang.reflect.Field;
@@ -187,8 +188,4 @@ public class FieldUtils {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.liwy.mobile.easydb.annotation.Table;
+import com.liwy.mobile.easydb.bean.User;
+import com.liwy.mobile.easydb.table.ColumnInfo;
 import com.liwy.mobile.easydb.table.SqlInfo;
+import com.liwy.mobile.easydb.table.TableInfo;
 import com.liwy.mobile.easydb.utils.ClassUtils;
 import com.liwy.mobile.easydb.utils.FieldUtils;
-import com.liwy.mobile.easydb.bean.User;
-import com.liwy.mobile.easydb.table.KeyValue;
-import com.liwy.mobile.easydb.table.TableInfo;
 import com.liwy.mobile.easydb.utils.SqlUtils;
 import com.orhanobut.logger.Logger;
 
@@ -22,6 +22,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.id;
 
 /**
  * Created by liwy on 2017/4/18.
@@ -97,16 +99,16 @@ public class EasyDB {
         return users;
     }
 
-    public static void deleteAll(){
-        String sql = "delete from user";
-        try {
-            db.execSQL(sql);
-            Logger.d("清理成功");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Logger.d("清理失败");
-        }
-    }
+//    public static void deleteAll(){
+//        String sql = "delete from user";
+//        try {
+//            db.execSQL(sql);
+//            Logger.d("清理成功");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            Logger.d("清理失败");
+//        }
+//    }
 
     // 判断表是否存在
     public static boolean isTableExist(Class clazz){
@@ -217,7 +219,13 @@ public class EasyDB {
         }
     }
 
-    public static <T> List<T> findAll(Class<T> clazz){
+    /**
+     * FindAll原理
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> findAllDebug(Class<T> clazz){
         List<T> list = new ArrayList<T>();
         Field[] fields = clazz.getDeclaredFields();
         String sql = "select * from " + ClassUtils.getTableName(clazz);
@@ -255,16 +263,71 @@ public class EasyDB {
     }
 
     /**
-     * 删除此条数据
-     * @param obj
+     * 查询该表下的所有数据
+     * @param clazz
+     * @param <T>
+     * @return
      */
-    public static void delete(Object obj){
-
+    public static <T> List<T> findAll(Class<T> clazz) {
+        String sql = SqlUtils.findAll(clazz);
+        Cursor cursor = db.rawQuery(sql, null);
+        List<T> dataList = new ArrayList<T>();
+        TableInfo table = TableInfo.get(clazz);
+        List<ColumnInfo> columns = table.getColumns();
+        if (table.idInfo != null)columns.add(table.idInfo);
+        while (cursor.moveToNext()) {
+            try {
+                Object obj = clazz.newInstance();
+                for (ColumnInfo column : columns) {
+                    String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
+                    FieldUtils.setFieldValue(obj, column.getField(), value);
+                }
+                dataList.add((T) obj);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        if (cursor != null || !cursor.isClosed()){
+            cursor.close();
+            cursor = null;
+        }
+        return dataList;
     }
 
+    /**
+     * 修改数据
+     * @param entity
+     */
+    public static void updateById(Object entity)throws NullPointerException{
+        SqlInfo sqlInfo = SqlUtils.updateById(entity);
+        if (sqlInfo != null){
+            debugSql(sqlInfo.getSql());
+            db.execSQL(sqlInfo.getSql(),sqlInfo.getValues());
+        }else{
+            throw new NullPointerException("该表木有ID主键哦");
+        }
+    }
+
+    /**
+     * 删除此条数据
+     * @param entity
+     */
+    public static void deleteById(Object entity){
+        String sql = SqlUtils.deleteById(entity);
+        debugSql(sql);
+        db.execSQL(sql);
+    }
+
+
+    /**
+     * 删除该表的所有数据
+     * @param clazz
+     */
     public static void deleteAll(Class clazz){
         db.delete(ClassUtils.getTableName(clazz),null,null);
-        System.out.println("删除成功");
+        debugSql("已清除" + ClassUtils.getTableName(clazz) + "的所有数据");
     }
 
     /**
@@ -272,9 +335,9 @@ public class EasyDB {
      * @param clazz
      */
     public static void drop(Class clazz){
-        String sql = "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
-        db.execSQL(sql);
+        String sql = SqlUtils.drop(clazz);
         debugSql(sql);
+        db.execSQL(sql);
     }
 
     public static void debugSql(String sql) {

@@ -43,7 +43,6 @@ public class TableInfo {
         TableInfo tableInfo = new TableInfo(clazz);
         tableInfo.tableName = ClassUtils.getTableName(clazz);
         //获取requiore不为false的参数
-       Field[] fields = clazz.getDeclaredFields();//该类所有的属性
         List<Field> classFields = FieldUtils.getClassFields(clazz);
        tableInfo.columns = new ArrayList<ColumnInfo>();
         tableInfo.fields = new ArrayList<Field>();

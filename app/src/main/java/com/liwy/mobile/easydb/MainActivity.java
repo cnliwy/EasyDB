@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn4;
     private Button btn5;
     private Button btn6;
+    private Button btn7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +40,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn4 = (Button)findViewById(R.id.btn4);
         btn5 = (Button)findViewById(R.id.btn5);
         btn6 = (Button)findViewById(R.id.btn6);
+        btn7 = (Button)findViewById(R.id.btn7);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
         btn4.setOnClickListener(this);
         btn5.setOnClickListener(this);
         btn6.setOnClickListener(this);
+        btn7.setOnClickListener(this);
     }
 
     @Override
@@ -60,21 +63,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn2:
-//                EasyDB.createTable();
                 EasyDB.createTable(User.class);
-//                EasyDB.create(Student.class);
                 break;
             case R.id.btn3:
-//                for (int i = 0; i < 4; i++){
-//                    EasyDB.insertData("name" + i, i);
                     EasyDB.insert(new User(12,"tom",25));
-//                    EasyDB.insert(new Student(233,"zhangsan","男"));
-
-//                }
+                    EasyDB.insert(new User(1,"liwy",25));
                 break;
             case R.id.btn4:
 //                List<Student> datas = EasyDB.findAll(Student.class);
+//                List<User> datas = EasyDB.findAllDebug(User.class);
                 List<User> datas = EasyDB.findAll(User.class);
+
                 if (datas != null && datas.size() > 0) {
                     contentTv.setText(datas.get(0).toString());
                 }else {
@@ -82,10 +81,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn5:
-                EasyDB.deleteAll();
+//                EasyDB.deleteAll();//
+                User user = new User(1,"liwy",25);
+                EasyDB.deleteById(user);
                 break;
             case R.id.btn6:
                 EasyDB.drop(User.class);
+                break;
+            case R.id.btn7:
+                User updateObj = new User(12,"jeck",88);
+                EasyDB.updateById(updateObj);
                 break;
 
         }
