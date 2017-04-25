@@ -110,14 +110,37 @@ public class SqlUtils {
         return "DROP TABLE IF EXISTS " + ClassUtils.getTableName(clazz);
     }
 
+    /**
+     * 生产查询语句（全表查询）
+     * @param clazz
+     * @return
+     */
     public static String findAll(Class clazz){
         return "select * from " + ClassUtils.getTableName(clazz);
     }
 
-    public static String findById(){
-        return "";
+    /**
+     * 生产查询语句（根据id查询）
+     * @param entity
+     * @return
+     */
+    public static SqlInfo findById(Object entity){
+        TableInfo table = TableInfo.get(entity);
+        if (table.getIdInfo() == null)return null;
+        SqlInfo sqlInfo = new SqlInfo();
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("select * from ").append(ClassUtils.getTableName(entity.getClass())).append(" where ").append(table.getIdInfo().getColumn()).append(" = ?");
+        sqlInfo.setSql(sql.toString());
+        sqlInfo.addValue(table.getIdInfo().getValue(entity));
+        return sqlInfo;
     }
 
+    /**
+     * 根据id更新数据
+     * @param entity
+     * @return
+     */
     public static SqlInfo updateById(Object entity){
         TableInfo table = TableInfo.get(entity);
         if (table.idInfo == null)return null;

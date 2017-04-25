@@ -19,6 +19,10 @@ public class User {
     public User() {
     }
 
+    public User(int id) {
+        this.id = id;
+    }
+
     public User(int id, String name) {
         this.id = id;
         this.name = name;
@@ -61,5 +65,13 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

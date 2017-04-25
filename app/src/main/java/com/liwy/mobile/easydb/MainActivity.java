@@ -70,13 +70,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     EasyDB.insert(new User(1,"liwy",25));
                 break;
             case R.id.btn4:
-//                List<Student> datas = EasyDB.findAll(Student.class);
-//                List<User> datas = EasyDB.findAllDebug(User.class);
-                List<User> datas = EasyDB.findAll(User.class);
-
-                if (datas != null && datas.size() > 0) {
-                    contentTv.setText(datas.get(0).toString());
-                }else {
+//                List<User> datas = EasyDB.findAll(User.class);
+//                if (datas != null && datas.size() > 0) {
+//                    contentTv.setText(datas.get(0).toString());
+//                }else {
+//                    contentTv.setText("啥都没查到");
+//                }
+                User user1 = EasyDB.findById(new User(1));
+                if (user1 != null){
+                    contentTv.setText(user1.toString());
+                }else{
                     contentTv.setText("啥都没查到");
                 }
                 break;

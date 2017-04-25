@@ -275,26 +275,59 @@ public class EasyDB {
         TableInfo table = TableInfo.get(clazz);
         List<ColumnInfo> columns = table.getColumns();
         if (table.idInfo != null)columns.add(table.idInfo);
-        while (cursor.moveToNext()) {
-            try {
-                Object obj = clazz.newInstance();
-                for (ColumnInfo column : columns) {
-                    String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
-//                    FieldUtils.setFieldValue(obj, column.getField(), value);
-                    column.setValue(obj,value);
-                }
-                dataList.add((T) obj);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        try {
+            while (cursor.moveToNext()) {
+
+                    Object obj = clazz.newInstance();
+                    for (ColumnInfo column : columns) {
+                        String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
+    //                    FieldUtils.setFieldValue(obj, column.getField(), value);
+                        column.setValue(obj,value);
+                    }
+                    dataList.add((T) obj);
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }finally {
+            if (cursor != null){
+                cursor.close();
+                cursor = null;
             }
         }
-        if (cursor != null || !cursor.isClosed()){
-            cursor.close();
-            cursor = null;
-        }
         return dataList;
+    }
+    public static <T> T findById(Object entity){
+        SqlInfo sqlInfo = SqlUtils.findById(entity);
+        if (sqlInfo == null)throw new NullPointerException("该表木有ID主键哦");
+        Cursor cursor = db.rawQuery(sqlInfo.getSql(),sqlInfo.getArgsStringArray());
+        try {
+            if (cursor.moveToNext()) {
+                TableInfo table = TableInfo.get(entity.getClass());
+                Object obj = entity.getClass().newInstance();
+                List<ColumnInfo> columns = table.getColumns();
+                columns.add(table.idInfo);
+                for (ColumnInfo column : columns) {
+                    String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
+                    column.setValue(obj,value);
+                }
+                return (T)obj;
+            }else{
+                return null;
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }finally {
+            if (cursor != null){
+                cursor.close();
+                cursor = null;
+            }
+        }
+        cursor.close();
+        return null;
     }
 
     /**
@@ -317,6 +350,7 @@ public class EasyDB {
      */
     public static void deleteById(Object entity){
         String sql = SqlUtils.deleteById(entity);
+        if (sql == null)throw new NullPointerException("该表木有ID主键哦");
         debugSql(sql);
         db.execSQL(sql);
     }

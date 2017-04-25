@@ -27,6 +27,23 @@ public class SqlInfo {
         return dataList != null ? dataList.toArray(): null;
     }
 
+    /**
+     * 获取查询语句的参数值
+     * @return
+     */
+    public String[] getArgsStringArray()
+    {
+        if (this.dataList != null)
+        {
+            String[] strings = new String[this.dataList.size()];
+            for (int i = 0; i < this.dataList.size(); i++) {
+                strings[i] = this.dataList.get(i).toString();
+            }
+            return strings;
+        }
+        return null;
+    }
+
     public SqlInfo() {
         dataList = new LinkedList<Object>();
     }
