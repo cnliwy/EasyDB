@@ -14,8 +14,14 @@ public class User {
     @Column(value = "name")
     private String name;
     private int age;
+    private String remark;
 
     public User() {
+    }
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public User(int id, String name, int age) {

@@ -1,6 +1,5 @@
 package com.liwy.mobile.easydb.table;
 
-import com.liwy.mobile.easydb.EasyDB;
 import com.liwy.mobile.easydb.annotation.Column;
 import com.liwy.mobile.easydb.annotation.Id;
 import com.liwy.mobile.easydb.utils.ClassUtils;
@@ -102,7 +101,6 @@ public class TableInfo {
         tableInfo.keyValues = new ArrayList<KeyValue>();
         for (Field field : classFields){
             Annotation[] annotations = field.getDeclaredAnnotations();
-            boolean required = true;
             if (annotations == null || annotations.length == 0){
                 ColumnInfo columnInfo = getColumnByField(clazz,field);
                 columnInfo.setColumn( field.getName());
@@ -115,8 +113,7 @@ public class TableInfo {
                     if (annotation instanceof Column){
                         Column column = (Column)annotation;
                         String columnName  = column.value();
-                        required = column.require();
-                        if (required){
+                        if (column.require()){
                             ColumnInfo columnInfo = getColumnByField(clazz,field);
                             if ("".equals(columnName))columnName = field.getName();
                             columnInfo.setColumn(columnName);

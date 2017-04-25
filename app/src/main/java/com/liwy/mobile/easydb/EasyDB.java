@@ -280,7 +280,8 @@ public class EasyDB {
                 Object obj = clazz.newInstance();
                 for (ColumnInfo column : columns) {
                     String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
-                    FieldUtils.setFieldValue(obj, column.getField(), value);
+//                    FieldUtils.setFieldValue(obj, column.getField(), value);
+                    column.setValue(obj,value);
                 }
                 dataList.add((T) obj);
             } catch (InstantiationException e) {

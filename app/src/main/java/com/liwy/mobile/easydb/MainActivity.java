@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EasyDB.drop(User.class);
                 break;
             case R.id.btn7:
-                User updateObj = new User(12,"jeck",88);
+                User updateObj = new User(12,"jeck");
                 EasyDB.updateById(updateObj);
                 break;
 
