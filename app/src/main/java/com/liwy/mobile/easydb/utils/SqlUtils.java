@@ -136,6 +136,10 @@ public class SqlUtils {
         return sqlInfo;
     }
 
+//    public static SqlInfo findByWhere(Object entity){
+//
+//    }
+
     /**
      * 根据id更新数据
      * @param entity

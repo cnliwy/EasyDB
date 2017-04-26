@@ -10,12 +10,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.liwy.mobile.easydb.table.ColumnInfo.getColumnByField;
+import static com.liwy.mobile.easydb.table.IdInfo.getIdByField;
+
 /**
  * Created by liwy on 2017/4/18.
  */
 
 public class TableInfo {
-//    public String className;        // 类名
     public String tableName;        // 表明（Table注解）
     public Object obj;               // 实体类
     public IdInfo idInfo;                      // 表的id主键
@@ -141,35 +143,9 @@ public class TableInfo {
     }
 
 
-    /**
-     * 生产表的列信息
-     * @param clazz
-     * @param field
-     * @return
-     */
-    public static ColumnInfo getColumnByField(Class clazz,Field field){
-        ColumnInfo columnInfo = new ColumnInfo();
-        columnInfo.setField(field);
-        columnInfo.setGet(FieldUtils.getGetMethodByField(clazz,field));
-        columnInfo.setSet(FieldUtils.getSetMethodByField(clazz,field));
-        columnInfo.setDataType(field.getType());
-        return columnInfo;
-    }
 
-    /**
-     * 生产表的Id信息
-     * @param clazz
-     * @param field
-     * @return
-     */
-    public static IdInfo getIdByField(Class clazz,Field field){
-        IdInfo idInfo = new IdInfo();
-        idInfo.setField(field);
-        idInfo.setGet(FieldUtils.getGetMethodByField(clazz,field));
-        idInfo.setSet(FieldUtils.getSetMethodByField(clazz,field));
-        idInfo.setDataType(field.getType());
-        return idInfo;
-    }
+
+
 
 
 

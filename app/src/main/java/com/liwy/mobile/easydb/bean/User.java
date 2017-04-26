@@ -4,6 +4,8 @@ import com.liwy.mobile.easydb.annotation.Column;
 import com.liwy.mobile.easydb.annotation.Id;
 import com.liwy.mobile.easydb.annotation.Table;
 
+import java.util.Date;
+
 /**
  * Created by liwy on 2017/4/18.
  */
@@ -15,6 +17,10 @@ public class User {
     private String name;
     private int age;
     private String remark;
+    private Date date;
+    private double weight;
+    private boolean isDead;
+    private boolean married;//是否已婚
 
     public User() {
     }
@@ -37,9 +43,14 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "idInfo=" + id +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
+                ", remark='" + remark + '\'' +
+                ", date=" + date +
+                ", weight=" + weight +
+                ", isDead=" + isDead +
+                ", married=" + married +
                 '}';
     }
 
@@ -73,5 +84,37 @@ public class User {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public boolean isMarried() {
+        return married;
+    }
+
+    public void setMarried(boolean married) {
+        this.married = married;
     }
 }

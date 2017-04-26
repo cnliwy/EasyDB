@@ -1,6 +1,7 @@
 package com.liwy.mobile.easydb;
 
 import com.liwy.mobile.easydb.annotation.Table;
+import com.liwy.mobile.easydb.bean.Student;
 
 import org.junit.Test;
 
@@ -25,5 +26,13 @@ public class ExampleUnitTest {
         System.out.println(sb.substring(0,sb.length()-3));
         sb = new StringBuffer(sb.substring(0,sb.length()-3));
         System.out.println(sb.toString());
+    }
+
+    @Test
+    public void testNull(){
+        Student student = new Student();
+        System.out.println("float:" + student.ageFloat);
+        System.out.println("double:" + student.ageDouble);
+        System.out.println("long:" + student.ageLong);
     }
 }

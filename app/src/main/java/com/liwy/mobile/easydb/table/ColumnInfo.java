@@ -2,18 +2,21 @@ package com.liwy.mobile.easydb.table;
 
 import android.annotation.SuppressLint;
 
+import com.liwy.mobile.easydb.utils.FieldUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import static com.liwy.mobile.easydb.utils.Utils.stringToDateTime;
+
 /**
  * Created by liwy on 2017/4/18.
  */
 
 public class ColumnInfo {
-    private Object value;
     private String fieldName;
     private String column;
     private Class<?> dataType;
@@ -44,17 +47,16 @@ public class ColumnInfo {
                     this.set.invoke(receiver, new Object[] { value.toString() });
                 } else if ((this.dataType == Integer.TYPE) || (this.dataType == Integer.class)) {
                     this.set.invoke(receiver, new Object[] { Integer.valueOf(value == null ? 0 : Integer.parseInt(value.toString())) });
-//                }
-//                else if ((this.dataType == Float.TYPE) || (this.dataType == Float.class)) {
-//                    this.set.invoke(receiver, new Object[] { Float.valueOf(value == null ? null.floatValue() : Float.parseFloat(value.toString())) });
-//                } else if ((this.dataType == Double.TYPE) || (this.dataType == Double.class)) {
-//                    this.set.invoke(receiver, new Object[] { Double.valueOf(value == null ? null.doubleValue() : Double.parseDouble(value.toString())) });
-//                } else if ((this.dataType == Long.TYPE) || (this.dataType == Long.class)) {
-//                    this.set.invoke(receiver, new Object[] { Long.valueOf(value == null ? null.longValue() : Long.parseLong(value.toString())) });
-//                } else if ((this.dataType == java.util.Date.class) || (this.dataType == java.sql.Date.class)) {
-//                    this.set.invoke(receiver, new Object[] { value == null ? null : stringToDateTime(value.toString()) });
-//                } else if ((this.dataType == Boolean.TYPE) || (this.dataType == Boolean.class)) {
-//                    this.set.invoke(receiver, new Object[] { Boolean.valueOf(value == null ? null.booleanValue() : "1".equals(value.toString())) });
+                } else if ((this.dataType == Float.TYPE) || (this.dataType == Float.class)) {
+                    this.set.invoke(receiver, new Object[] { Float.valueOf(value == null ? 0 : Float.parseFloat(value.toString())) });
+                } else if ((this.dataType == Double.TYPE) || (this.dataType == Double.class)) {
+                    this.set.invoke(receiver, new Object[] { Double.valueOf(value == null ? 0 : Double.parseDouble(value.toString())) });
+                } else if ((this.dataType == Long.TYPE) || (this.dataType == Long.class)) {
+                    this.set.invoke(receiver, new Object[] { Long.valueOf(value == null ? 0 : Long.parseLong(value.toString())) });
+                } else if ((this.dataType == java.util.Date.class) || (this.dataType == java.sql.Date.class)) {
+                    this.set.invoke(receiver, new Object[] { value == null ? null : stringToDateTime(value.toString()) });
+                } else if ((this.dataType == Boolean.TYPE) || (this.dataType == Boolean.class)) {
+                    this.set.invoke(receiver, new Object[] { Boolean.valueOf(value == null ? false : "1".equals(value.toString())) });
                 } else {
                     this.set.invoke(receiver, new Object[] { value });
                 }
@@ -75,25 +77,23 @@ public class ColumnInfo {
             }
         }
     }
-    @SuppressLint({"SimpleDateFormat"})
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private static java.util.Date stringToDateTime(String strDate)
-    {
-        if (strDate != null) {
-            try {
-                return sdf.parse(strDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+    /**
+     * 生产表的列信息
+     * @param clazz
+     * @param field
+     * @return
+     */
+    public static ColumnInfo getColumnByField(Class clazz,Field field){
+        ColumnInfo columnInfo = new ColumnInfo();
+        columnInfo.setField(field);
+        Class<?> type = field.getType();
+        columnInfo.setDataType(type);
+        columnInfo.setGet(FieldUtils.getGetMethodByField(clazz,field));
+        columnInfo.setSet(FieldUtils.getSetMethodByField(clazz,field));
+        return columnInfo;
     }
 
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
 
     public String getFieldName() {
         return fieldName;

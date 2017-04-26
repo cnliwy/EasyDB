@@ -281,7 +281,6 @@ public class EasyDB {
                     Object obj = clazz.newInstance();
                     for (ColumnInfo column : columns) {
                         String value = cursor.getString(cursor.getColumnIndex(column.getColumn()));
-    //                    FieldUtils.setFieldValue(obj, column.getField(), value);
                         column.setValue(obj,value);
                     }
                     dataList.add((T) obj);
@@ -298,6 +297,11 @@ public class EasyDB {
         }
         return dataList;
     }
+
+//    public static <T> List<T> findByWhere(Object entity){
+//
+//    }
+
     public static <T> T findById(Object entity){
         SqlInfo sqlInfo = SqlUtils.findById(entity);
         if (sqlInfo == null)throw new NullPointerException("该表木有ID主键哦");

@@ -13,6 +13,7 @@ import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import static com.liwy.mobile.easydb.EasyDB.DATABASE_FILENAME;
@@ -66,8 +67,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EasyDB.createTable(User.class);
                 break;
             case R.id.btn3:
-                    EasyDB.insert(new User(12,"tom",25));
-                    EasyDB.insert(new User(1,"liwy",25));
+                User user1 = new User(12,"tom",25);
+                user1.setDead(true);
+                user1.setWeight(55.66);
+                user1.setMarried(true);
+                Date date = new Date();
+                System.out.println(date.toString());
+                user1.setDate(new Date());
+                user1.setRemark("他不胖哦");
+                EasyDB.insert( user1);
                 break;
             case R.id.btn4:
 //                List<User> datas = EasyDB.findAll(User.class);
@@ -76,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                }else {
 //                    contentTv.setText("啥都没查到");
 //                }
-                User user1 = EasyDB.findById(new User(1));
-                if (user1 != null){
-                    contentTv.setText(user1.toString());
+                User user2 = EasyDB.findById(new User(12));
+                if (user2 != null){
+                    contentTv.setText(user2.toString());
                 }else{
                     contentTv.setText("啥都没查到");
                 }

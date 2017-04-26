@@ -16,6 +16,10 @@ public class Student {
 
     private String sex;
 
+    public double ageDouble;
+    public float ageFloat;
+    public long ageLong;
+
     public Student() {
     }
 
@@ -57,4 +61,5 @@ public class Student {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
 }
