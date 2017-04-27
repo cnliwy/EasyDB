@@ -35,4 +35,25 @@ public class ExampleUnitTest {
         System.out.println("double:" + student.ageDouble);
         System.out.println("long:" + student.ageLong);
     }
+
+
+    @Test
+    public void testFinally(){
+        System.out.println("成功获取：" + getString());
+    }
+
+    public static String getString(){
+        String a = "123456";
+        try {
+            System.out.println(a.toString());
+            return a;
+        } catch (Exception e) {
+            System.out.println("抓到了异常");
+            e.printStackTrace();
+        }finally {
+            System.out.println("裁决异常");
+        }
+        System.out.println("执行结束");
+        return a;
+    }
 }

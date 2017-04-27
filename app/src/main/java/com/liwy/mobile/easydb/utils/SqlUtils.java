@@ -136,18 +136,54 @@ public class SqlUtils {
         return sqlInfo;
     }
 
-//    public static SqlInfo findByWhere(Object entity){
-//
-//    }
+    /**
+     * 根据搜索条件查询数据
+     * @param clazz
+     * @param strCondition  查询条件
+     * @return
+     */
+    public static SqlInfo findByCondition(Class clazz,String strCondition){
+        StringBuffer sb = new StringBuffer(findAll(clazz)).append(" ").append(strCondition);
+        SqlInfo sqlInfo = new SqlInfo();
+        sqlInfo.setSql(sb.toString());
+        return sqlInfo;
+    }
+
 
     /**
-     * 根据id更新数据
+     * 根据id更新数据语句
      * @param entity
      * @return
      */
     public static SqlInfo updateById(Object entity){
         TableInfo table = TableInfo.get(entity);
         if (table.idInfo == null)return null;
+        SqlInfo sqlInfo = getUpdateBaseSQL(table);
+        StringBuffer sql = new StringBuffer(sqlInfo.getSql());
+        sql.append(" where ").append(table.getIdInfo().getColumn()).append(" = ?");
+        Object obj = FieldUtils.getFieldValue(entity,table.getIdInfo().getField());
+        sqlInfo.addValue(obj);
+        sqlInfo.setSql(sql.toString());
+        return sqlInfo;
+    }
+
+    /**
+     * 根据条件更新语句
+     * @param entity
+     * @param strCondition
+     * @return
+     */
+    public static SqlInfo updateByCondition(Object entity,String strCondition){
+        TableInfo table = TableInfo.get(entity);
+        if (table.idInfo == null)return null;
+        SqlInfo sqlInfo = getUpdateBaseSQL(table);
+        StringBuffer sql = new StringBuffer(sqlInfo.getSql());
+        sql.append(" ").append(strCondition);
+        sqlInfo.setSql(sql.toString());
+        return sqlInfo;
+    }
+
+    public static SqlInfo getUpdateBaseSQL(TableInfo table){
         SqlInfo sqlInfo = new SqlInfo();
         List<KeyValue> keyValues = table.getKeyValues();
         StringBuffer sql = new StringBuffer();
@@ -157,9 +193,7 @@ public class SqlUtils {
             sql.append(keyValue.getKey()).append(" = ?,");
             sqlInfo.addValue(keyValue.getValue());
         }
-        sql.deleteCharAt(sql.length() - 1).append(" where ").append(table.getIdInfo().getColumn()).append(" = ?");
-        sqlInfo.addValue(FieldUtils.getFieldValue(entity,table.getIdInfo().getField()));
-        sqlInfo.setSql(sql.toString());
+        sqlInfo.setSql(sql.deleteCharAt(sql.length() - 1).toString());
         return sqlInfo;
     }
 
