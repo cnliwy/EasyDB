@@ -1,9 +1,12 @@
 package com.liwy.mobile.easydb;
 
-import com.liwy.mobile.easydb.annotation.Table;
-import com.liwy.mobile.easydb.bean.Student;
+import com.liwy.mobile.easydb.bean.House;
 
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import static org.junit.Assert.*;
 
@@ -28,13 +31,6 @@ public class ExampleUnitTest {
         System.out.println(sb.toString());
     }
 
-    @Test
-    public void testNull(){
-        Student student = new Student();
-        System.out.println("float:" + student.ageFloat);
-        System.out.println("double:" + student.ageDouble);
-        System.out.println("long:" + student.ageLong);
-    }
 
 
     @Test
@@ -55,5 +51,36 @@ public class ExampleUnitTest {
         }
         System.out.println("执行结束");
         return a;
+    }
+
+
+    @Test
+    public void testType(){
+        Field[] fields = House.class.getDeclaredFields();
+        for (Field field : fields){
+            System.out.println("getGenericType:" + field.getGenericType().toString() + ",class:" + field.getType());
+            Type type = field.getGenericType();
+            System.out.println(ParameterizedType.class.toString());
+            if ((type instanceof ParameterizedType))
+            {
+                ParameterizedType pType = (ParameterizedType)field.getGenericType();
+                System.out.println(pType.toString());
+                if (pType.getActualTypeArguments().length == 1)
+                {
+                    Class<?> pClazz = (Class)pType.getActualTypeArguments()[0];
+                    if (pClazz != null) {
+//                        otm.setOneClass(pClazz);
+                        System.out.println("[0] class不为空：" + pClazz.getName());
+                    }
+                }
+                else
+                {
+                    Class<?> pClazz = (Class)pType.getActualTypeArguments()[1];
+                    if (pClazz != null) {
+                        System.out.println("[1] class不为空：" + pClazz.getName());
+                    }
+                }
+            }
+        }
     }
 }

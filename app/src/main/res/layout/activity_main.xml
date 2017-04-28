@@ -19,7 +19,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="创建数据库"/>
+        android:text="创建表"/>
 
     <Button
         android:id="@+id/btn2"
@@ -28,7 +28,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="创建表"/>
+        android:text="插入数据"/>
 
     <Button
         android:id="@+id/btn3"
@@ -37,7 +37,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="插入数据"/>
+        android:text="查询数据"/>
 
     <Button
         android:id="@+id/btn7"
@@ -56,7 +56,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="查询数据"/>
+        android:text="清空数据(id删除)"/>
 
     <Button
         android:id="@+id/btn5"
@@ -65,7 +65,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="清空数据(id删除)"/>
+        android:text="删除表"/>
 
     <Button
         android:id="@+id/btn6"
@@ -74,7 +74,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="删除表"/>
+        android:text=""/>
 
 
 

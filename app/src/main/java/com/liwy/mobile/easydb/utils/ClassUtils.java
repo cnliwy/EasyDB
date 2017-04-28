@@ -6,6 +6,7 @@ import com.liwy.mobile.easydb.annotation.Column;
 import com.liwy.mobile.easydb.annotation.Table;
 import com.liwy.mobile.easydb.table.ColumnInfo;
 import com.liwy.mobile.easydb.table.KeyValue;
+import com.liwy.mobile.easydb.table.OneToManyInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -25,8 +26,6 @@ public class ClassUtils {
         }
         return annotation.value();
     }
-
-
 
     /**
      * 获取用于数据库操作的键值对

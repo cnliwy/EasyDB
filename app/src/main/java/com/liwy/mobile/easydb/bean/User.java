@@ -22,6 +22,8 @@ public class User {
     private boolean isDead;
     private boolean married;//是否已婚
 
+    private int houseId;//房屋id
+
     public User() {
     }
 
@@ -34,10 +36,10 @@ public class User {
         this.name = name;
     }
 
-    public User(int id, String name, int age) {
+    public User(int id, String name, int houseId) {
         this.id = id;
         this.name = name;
-        this.age = age;
+        this.houseId = houseId;
     }
 
     @Override
@@ -45,12 +47,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", age=" + age +
-                ", remark='" + remark + '\'' +
-                ", date=" + date +
-                ", weight=" + weight +
-                ", isDead=" + isDead +
-                ", married=" + married +
+                ", houseId=" + houseId +
                 '}';
     }
 
@@ -116,5 +113,13 @@ public class User {
 
     public void setMarried(boolean married) {
         this.married = married;
+    }
+
+    public int getHouseId() {
+        return houseId;
+    }
+
+    public void setHouseId(int houseId) {
+        this.houseId = houseId;
     }
 }

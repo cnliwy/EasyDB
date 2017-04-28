@@ -7,17 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.liwy.mobile.easydb.bean.Student;
 import com.liwy.mobile.easydb.bean.User;
 import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import static com.liwy.mobile.easydb.EasyDB.DATABASE_FILENAME;
-import static com.liwy.mobile.easydb.EasyDB.DATABASE_PATH;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView contentTv;
@@ -58,17 +55,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn1:
-                break;
-            case R.id.btn2:
                 EasyDB.createTable(User.class);
                 break;
-            case R.id.btn3:
+            case R.id.btn2:
                 insert();
                 break;
-            case R.id.btn4:
-//                findAll();
+            case R.id.btn3:
+                //                findAll();
 //                findById();
                 findByCondition();
+                break;
+            case R.id.btn4:
+                User updateObj = new User(10,"jecknew",24);
+//                EasyDB.updateById(updateObj);
+                EasyDB.updateByCondition(updateObj,"where age = 24 and _id = 10");
                 break;
             case R.id.btn5:
 //                EasyDB.deleteAll();//
@@ -79,9 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EasyDB.drop(User.class);
                 break;
             case R.id.btn7:
-                User updateObj = new User(10,"jecknew",24);
-//                EasyDB.updateById(updateObj);
-                EasyDB.updateByCondition(updateObj,"where age = 24 and _id = 10");
+
                 break;
 
         }
