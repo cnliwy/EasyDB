@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.liwy.mobile.easydb.MainActivity">
+    tools:context="com.easydb.mobile.easydb.MainActivity">
 
     <TextView
         android:id="@+id/tv_content"
@@ -40,23 +40,13 @@
         android:text="查询数据"/>
 
     <Button
-        android:id="@+id/btn7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:layout_margin="10dp"
-        android:textColor="#ffffff"
-        android:text="修改数据"/>
-
-
-    <Button
         android:id="@+id/btn4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="清空数据(id删除)"/>
+        android:text="修改数据"/>
 
     <Button
         android:id="@+id/btn5"
@@ -65,7 +55,7 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
-        android:text="删除表"/>
+        android:text="清空数据(id删除)"/>
 
     <Button
         android:id="@+id/btn6"
@@ -74,7 +64,19 @@
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:textColor="#ffffff"
+        android:text="删除表"/>
+
+    <Button
+        android:id="@+id/btn7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_margin="10dp"
+        android:textColor="#ffffff"
         android:text=""/>
+
+
+
 
 
 
