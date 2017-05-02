@@ -3,9 +3,8 @@ package com.easydb.mobile.easydb.bean;
 
 import com.easydb.annotation.Column;
 import com.easydb.annotation.Id;
+import com.easydb.annotation.ManyToOne;
 import com.easydb.annotation.Table;
-
-import java.util.Date;
 
 /**
  * Created by liwy on 2017/4/18.
@@ -16,14 +15,16 @@ public class User {
     public int id;
     @Column(value = "name")
     private String name;
+
     private int age;
     private String remark;
-    private Date date;
+    private String date;
     private double weight;
     private boolean isDead;
     private boolean married;//是否已婚
 
-    private int houseId;//房屋id
+    @ManyToOne(associatedColumn = "houseId" )
+    private House house;
 
     public User() {
     }
@@ -37,18 +38,11 @@ public class User {
         this.name = name;
     }
 
-    public User(int id, String name, int houseId) {
-        this.id = id;
-        this.name = name;
-        this.houseId = houseId;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", houseId=" + houseId +
                 '}';
     }
 
@@ -84,11 +78,11 @@ public class User {
         this.remark = remark;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -116,11 +110,11 @@ public class User {
         this.married = married;
     }
 
-    public int getHouseId() {
-        return houseId;
+    public House getHouse() {
+        return house;
     }
 
-    public void setHouseId(int houseId) {
-        this.houseId = houseId;
+    public void setHouse(House house) {
+        this.house = house;
     }
 }

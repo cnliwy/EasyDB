@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by liwy on 2017/4/28.
+ * 用于排除某个类变量为表字段
+ * Created by liwy on 2017/5/2.
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ManyToOne {
-    String associatedColumn() default "";//多对一关系的关联字段
+@Target(ElementType.FIELD)
+public @interface Exclusion {
 }

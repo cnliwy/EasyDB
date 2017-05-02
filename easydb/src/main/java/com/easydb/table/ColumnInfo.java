@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import static com.easydb.utils.Utils.stringToDateTime;
 
 /**
+ * 表字段信息
  * Created by liwy on 2017/4/18.
  */
 

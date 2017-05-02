@@ -3,6 +3,7 @@ package com.easydb.table;
 import java.util.LinkedList;
 
 /**
+ * sql信息类
  * Created by admin on 2017/4/20.
  */
 

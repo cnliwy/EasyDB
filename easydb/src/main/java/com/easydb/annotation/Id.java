@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * id字段注解
  * Created by admin on 2017/4/20.
  */
 

@@ -119,7 +119,7 @@ public class FieldUtils {
         return null;
     }
 
-    public static Method getBooleanFieldSetMethod(Class<?> clazz, Field f)
+    private static Method getBooleanFieldSetMethod(Class<?> clazz, Field f)
     {
         String fn = f.getName();
         String mn = "set" + fn.substring(0, 1).toUpperCase() + fn.substring(1);
@@ -283,33 +283,5 @@ public class FieldUtils {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static OneToManyInfo getOneToManyColumnByField(Field field){
-        OneToManyInfo oneToManyInfo = new OneToManyInfo();
-        Type type = field.getGenericType();
-        System.out.println(ParameterizedType.class.toString());
-        if ((type instanceof ParameterizedType))
-        {
-            ParameterizedType pType = (ParameterizedType)field.getGenericType();
-            System.out.println(pType.toString());
-            if (pType.getActualTypeArguments().length == 1)
-            {
-                Class<?> pClazz = (Class)pType.getActualTypeArguments()[0];
-                if (pClazz != null) {
-//                        otm.setOneClass(pClazz);
-                    System.out.println("[0] class不为空：" + pClazz.getName());
-                }
-            }
-            else
-            {
-                Class<?> pClazz = (Class)pType.getActualTypeArguments()[1];
-                if (pClazz != null) {
-                    System.out.println("[1] class不为空：" + pClazz.getName());
-                }
-            }
-        }
-        return oneToManyInfo;
     }
 }

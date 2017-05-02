@@ -8,14 +8,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.easydb.EasyDB;
+import com.easydb.mobile.easydb.bean.House;
 import com.easydb.mobile.easydb.bean.User;
+import com.easydb.utils.Utils;
 import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static com.easydb.EasyDB.DATABASE_FILENAME;
+import static com.easydb.EasyDB.findById;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn1:
+                EasyDB.createTable(House.class);
                 EasyDB.createTable(User.class);
                 break;
             case R.id.btn2:
@@ -68,20 +73,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 findByCondition();
                 break;
             case R.id.btn4:
-                User updateObj = new User(10,"jecknew",24);
+                User updateObj = new User(10,"jecknew");
 //                EasyDB.updateById(updateObj);
                 EasyDB.updateByCondition(updateObj,"where age = 24 and _id = 10");
                 break;
             case R.id.btn5:
 //                EasyDB.deleteAll();//
-                User user = new User(13,"liwy",25);
+                User user = new User(13,"liwy");
                 EasyDB.deleteById(user);
                 break;
             case R.id.btn6:
                 EasyDB.drop(User.class);
+                EasyDB.drop(House.class);
                 break;
             case R.id.btn7:
-
+//                findOneToMany();
+                findManyToOne();
                 break;
 
         }
@@ -101,19 +108,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     // 插入数据
     public void insert(){
-        User user1 = new User(12,"tom",25);
+        House house = new House(1,"西湖小区");
+        EasyDB.insert(house);
+        User user1 = new User(12,"tom");
         user1.setDead(true);
         user1.setWeight(55.66);
         user1.setMarried(true);
+        user1.setHouse(house);
         Date date = new Date();
         System.out.println(date.toString());
-        user1.setDate(new Date());
-        user1.setRemark("他不胖哦");
+        user1.setDate("2017-05-12 12:25:12");
+        user1.setRemark("聪明机智");
         EasyDB.insert( user1);
-        EasyDB.insert(new User(11,"tom2",24));
-        EasyDB.insert(new User(10,"lll",24));
-        EasyDB.insert(new User(13,"wzs",24));
-        EasyDB.insert(new User(14,"hjk",26));
+
+        User user2= new User(11,"tom2");
+        user2.setHouse(house);
+        EasyDB.insert(user2);
+//        EasyDB.insert(new User(10,"lll"));
+//        EasyDB.insert(new User(13,"wzs"));
+//        EasyDB.insert(new User(14,"hjk"));
+    }
+    //根据id查询OneToMany
+    public void findOneToMany(){
+//        House findHouse = new House();
+//        findHouse.setId(1);
+//        List<User> users = new ArrayList<User>();
+//        users.add(new User(1,"wangliu",2));
+//        findHouse.setUsers(users);
+//        House house = EasyDB.findById(findHouse);
+        List<House> houses = EasyDB.findAll(House.class);
+        for (House house : houses){
+            System.out.println(house.toString());
+            if (house.getUsers() == null)continue;
+            for (User user : house.getUsers()){
+                System.out.println(user.toString());
+            }
+            contentTv.setText(house.toString());
+        }
+    }
+
+    public void findManyToOne(){
+        User user = new User();
+        user.setId(11);
+        House house = new House();
+        house.setId(1);
+        user.setHouse(house);
+
+        User tom = EasyDB.findById(user);
+        System.out.println(tom.toString());
+        if (tom.getHouse() != null){
+            System.out.println(tom.getHouse().toString());
+            contentTv.setText(tom.getHouse().toString());
+        }else{
+            System.out.println("未查到House数据");
+        }
+
     }
 
     // 根据id查询用户
@@ -128,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //根据查询条件查询数据
     public void findByCondition(){
-       List<User> users =  EasyDB.findByCondition(User.class," where houseId = 24");
+       List<User> users =  EasyDB.findByCondition(User.class," where houseId = 1");
         printUsers(users);
     }
 

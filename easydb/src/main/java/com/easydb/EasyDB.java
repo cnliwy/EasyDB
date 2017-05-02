@@ -7,8 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import com.easydb.annotation.ManyToOne;
 import com.easydb.annotation.Table;
+import com.easydb.table.DbModel;
+import com.easydb.table.ManyToOneInfo;
+import com.easydb.table.OneToManyInfo;
 import com.easydb.table.SqlInfo;
+import com.easydb.table.TableInfo;
 import com.easydb.utils.ClassUtils;
 import com.easydb.utils.CursorUtils;
 import com.easydb.utils.FieldUtils;
@@ -19,7 +24,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+
+import static android.R.attr.id;
 
 
 /**
@@ -265,6 +274,12 @@ public class EasyDB {
         String sql = SqlUtils.findAll(clazz);
         Cursor cursor = db.rawQuery(sql, null);
         List<T> dataList = CursorUtils.getListByCursor(cursor,clazz);
+        //  一对多查询
+        for (int i = 0; i < dataList.size(); i++){
+            Object obj = dataList.get(i);
+            loadOneToMany(obj);
+            dataList.set(i,(T)obj);
+        }
         return dataList;
     }
 
@@ -294,7 +309,42 @@ public class EasyDB {
         if (sqlInfo == null)throw new NullPointerException("this table has no primary key!(NO ID)");
         Cursor cursor = db.rawQuery(sqlInfo.getSql(),sqlInfo.getArgsStringArray());
         try {
-            T t = CursorUtils.getObjectByCursor(cursor,entity.getClass());
+
+            DbModel dbModel = CursorUtils.getDbModel(cursor);
+//            T t = CursorUtils.getObjectByCursor(cursor,entity.getClass());
+            T t = CursorUtils.dbModel2Entity(dbModel,entity.getClass());
+            loadOneToMany(t);
+            loadManyToOne(t,dbModel);
+            return t;
+        }
+//        catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+        finally {
+            if (cursor != null){
+                cursor.close();
+                cursor = null;
+            }
+        }
+    }
+
+
+    /**
+     * ManyToOne
+     * 根据查询条件查询父对象
+     * @param condition
+     * @param <T>
+     * @return
+     */
+    private static <T> T findManyByCondition(String condition,Class clazz){
+        SqlInfo sqlInfo = SqlUtils.findByCondition(clazz,condition);
+        if (sqlInfo == null)throw new NullPointerException("this table has no primary key!(NO ID)");
+        debugSql(sqlInfo.getSql());
+        Cursor cursor = db.rawQuery(sqlInfo.getSql(),sqlInfo.getArgsStringArray());
+        try {
+            T t =  CursorUtils.getObjectByCursor(cursor,clazz);
             return t;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -307,6 +357,36 @@ public class EasyDB {
             }
         }
         return null;
+    }
+
+    public static void loadOneToMany(Object entity){
+        if (entity == null)return;
+        TableInfo table = TableInfo.get(entity);
+        Collection<OneToManyInfo> ones = table.getOtms().values();
+        for (OneToManyInfo one : ones){
+            String condition = " where " + one.getAssociateColumn() + " = " + table.getIdInfo().getValue(entity);
+            List<?> list = findByCondition(one.getOneClass(),condition);
+            if (list != null && list.size() > 0){
+                one.setValue(entity,list);
+            }
+        }
+    }
+
+    /**
+     * 加载ManyToOne数据
+     * @param entity
+     */
+    public static void loadManyToOne(Object entity,DbModel dbModel){
+        if (entity == null)return;
+        TableInfo table = TableInfo.get(entity);
+        Collection<ManyToOneInfo> manys =  table.getMtos().values();
+        for (ManyToOneInfo many : manys){
+            TableInfo tableinfo = TableInfo.get(many.getDataType());
+            int id = Integer.valueOf(dbModel.getInt(many.getColumn()));
+            String condition = " where " + tableinfo.getIdInfo().getColumn() + " = " + id;
+            Object obj = findManyByCondition(condition,tableinfo.getClazz());
+            many.setValue(entity,obj);
+        }
     }
 
     /**

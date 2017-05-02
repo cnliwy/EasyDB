@@ -1,6 +1,7 @@
 package com.easydb.table;
 
 /**
+ * 对象中键值对
  * Created by liwy on 2017/4/19.
  */
 

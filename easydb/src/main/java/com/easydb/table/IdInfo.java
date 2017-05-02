@@ -6,6 +6,7 @@ import com.easydb.utils.FieldUtils;
 import java.lang.reflect.Field;
 
 /**
+ * id字段信息
  * Created by liwy on 2017/4/22.
  */
 

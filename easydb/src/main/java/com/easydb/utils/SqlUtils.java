@@ -1,12 +1,15 @@
 package com.easydb.utils;
 
 
+import com.easydb.EasyDB;
 import com.easydb.table.ColumnInfo;
 import com.easydb.table.IdInfo;
 import com.easydb.table.KeyValue;
+import com.easydb.table.ManyToOneInfo;
 import com.easydb.table.SqlInfo;
 import com.easydb.table.TableInfo;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,6 +42,10 @@ public class SqlUtils {
         List<ColumnInfo> columnInfos = tableInfo.getColumns();
         for (ColumnInfo column : columnInfos){
             sb.append("\"").append(column.getColumn()).append("\",");
+        }
+        Collection<ManyToOneInfo> manyToOneInfos = tableInfo.mtos.values();
+        for (ManyToOneInfo manyToOneInfo : manyToOneInfos){
+            sb.append("\"").append(manyToOneInfo.getColumn()).append("\",");
         }
         sb.deleteCharAt(sb.length() - 1);
         sb.append(")");
