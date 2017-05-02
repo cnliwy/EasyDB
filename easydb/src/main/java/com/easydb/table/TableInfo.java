@@ -29,6 +29,7 @@ public class TableInfo {
     public List<KeyValue> keyValues;
     public List<Field> fields;
     public List<ColumnInfo> columns;
+    private boolean checkDatabese;
     public HashMap<String, OneToManyInfo> otms;// 一对多的属性集合
     public HashMap<String, ManyToOneInfo> mtos;// 多对一的属性集合
     private HashMap<String, TableInfo> tableInfoHashMap;//缓存类信息
@@ -272,5 +273,13 @@ public class TableInfo {
 
     public void setMtos(HashMap<String, ManyToOneInfo> mtos) {
         this.mtos = mtos;
+    }
+
+    public boolean isCheckDatabese() {
+        return checkDatabese;
+    }
+
+    public void setCheckDatabese(boolean checkDatabese) {
+        this.checkDatabese = checkDatabese;
     }
 }

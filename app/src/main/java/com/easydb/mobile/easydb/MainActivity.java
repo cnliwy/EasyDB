@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.easydb.EasyDB;
 import com.easydb.mobile.easydb.bean.House;
 import com.easydb.mobile.easydb.bean.User;
+import com.easydb.table.TableInfo;
+import com.easydb.utils.SqlUtils;
 import com.easydb.utils.Utils;
 import com.orhanobut.logger.Logger;
 import com.yanzhenjie.permission.AndPermission;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.easydb.EasyDB.DATABASE_FILENAME;
+import static com.easydb.EasyDB.debugSql;
 import static com.easydb.EasyDB.findById;
 
 
@@ -147,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * manytoOne演示
+     */
     public void findManyToOne(){
         User user = new User();
         user.setId(11);
@@ -154,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         house.setId(1);
         user.setHouse(house);
 
-        User tom = EasyDB.findById(user);
+        User tom = EasyDB.findByIdWithRelation(user);
         System.out.println(tom.toString());
         if (tom.getHouse() != null){
             System.out.println(tom.getHouse().toString());
@@ -204,4 +210,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             contentTv.setText(user.toString());
         }
     }
+
+
 }

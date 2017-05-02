@@ -64,24 +64,6 @@ public class EasyDB {
         }
     }
 
-    public static void createTable(){
-        String sql = "create table user(_id integer primary key autoincrement,name text,age integer)";
-        try {
-            db.execSQL(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void insertData(String name,int age){
-        String sql  = "insert into user(name,age) values('"+ name + "'," + age + ")";
-        try {
-            db.execSQL(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 查询所有
      * @return
@@ -116,17 +98,6 @@ public class EasyDB {
 //            Logger.d("清理失败");
 //        }
 //    }
-
-    // 判断表是否存在
-    public static boolean isTableExist(Class clazz){
-        Annotation annotation = clazz.getAnnotation(Table.class);
-        if (annotation != null){
-            if (annotation instanceof Table){
-                Table table = (Table)annotation;
-            }
-        }
-        return false;
-    }
 
     /**
      * 创建表
@@ -214,6 +185,7 @@ public class EasyDB {
      * @param obj
      */
     public static void insert(Object obj){
+        checkTableExist(obj.getClass());
         SqlInfo sqlInfo = SqlUtils.insert(obj);
         if (sqlInfo != null) {
             debugSql(sqlInfo.getSql());
@@ -228,6 +200,7 @@ public class EasyDB {
      * @return
      */
     public static <T> List<T> findAllDebug(Class<T> clazz){
+        checkTableExist(clazz);
         List<T> list = new ArrayList<T>();
         Field[] fields = clazz.getDeclaredFields();
         String sql = "select * from " + ClassUtils.getTableName(clazz);
@@ -271,6 +244,7 @@ public class EasyDB {
      * @return
      */
     public static <T> List<T> findAll(Class<T> clazz) {
+        checkTableExist(clazz);
         String sql = SqlUtils.findAll(clazz);
         Cursor cursor = db.rawQuery(sql, null);
         List<T> dataList = CursorUtils.getListByCursor(cursor,clazz);
@@ -291,6 +265,7 @@ public class EasyDB {
      * @return
      */
     public static <T> List<T> findByCondition(Class clazz,String strCondition){
+        checkTableExist(clazz);
         SqlInfo sqlInfo = SqlUtils.findByCondition(clazz,strCondition);
         debugSql(sqlInfo.getSql());
         Cursor cursor = db.rawQuery(sqlInfo.getSql(),null);
@@ -305,31 +280,51 @@ public class EasyDB {
      * @return
      */
     public static <T> T findById(Object entity){
+        checkTableExist(entity.getClass());
         SqlInfo sqlInfo = SqlUtils.findById(entity);
         if (sqlInfo == null)throw new NullPointerException("this table has no primary key!(NO ID)");
         Cursor cursor = db.rawQuery(sqlInfo.getSql(),sqlInfo.getArgsStringArray());
         try {
 
-            DbModel dbModel = CursorUtils.getDbModel(cursor);
-//            T t = CursorUtils.getObjectByCursor(cursor,entity.getClass());
-            T t = CursorUtils.dbModel2Entity(dbModel,entity.getClass());
-            loadOneToMany(t);
-            loadManyToOne(t,dbModel);
+            T t = CursorUtils.getObjectByCursor(cursor,entity.getClass());
             return t;
+        }catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-//        catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
         finally {
             if (cursor != null){
                 cursor.close();
                 cursor = null;
             }
         }
+        return null;
     }
-
+    /**
+     * 关联查询，支持ManyToOne和OneToMany
+     * @param entity
+     * @param <T>
+     * @return
+     */
+    public static <T> T findByIdWithRelation(Object entity){
+        checkTableExist(entity.getClass());
+        SqlInfo sqlInfo = SqlUtils.findById(entity);
+        if (sqlInfo == null)throw new NullPointerException("this table has no primary key!(NO ID)");
+        Cursor cursor = db.rawQuery(sqlInfo.getSql(),sqlInfo.getArgsStringArray());
+        try {
+            DbModel dbModel = CursorUtils.getDbModel(cursor);
+            T t = CursorUtils.dbModel2Entity(dbModel,entity.getClass());
+            loadOneToMany(t);
+            loadManyToOne(t,dbModel);
+            return t;
+        } finally {
+            if (cursor != null){
+                cursor.close();
+                cursor = null;
+            }
+        }
+    }
 
     /**
      * ManyToOne
@@ -339,6 +334,7 @@ public class EasyDB {
      * @return
      */
     private static <T> T findManyByCondition(String condition,Class clazz){
+        checkTableExist(clazz);
         SqlInfo sqlInfo = SqlUtils.findByCondition(clazz,condition);
         if (sqlInfo == null)throw new NullPointerException("this table has no primary key!(NO ID)");
         debugSql(sqlInfo.getSql());
@@ -394,6 +390,7 @@ public class EasyDB {
      * @param entity
      */
     public static void updateById(Object entity)throws NullPointerException{
+        checkTableExist(entity.getClass());
         SqlInfo sqlInfo = SqlUtils.updateById(entity);
         if (sqlInfo != null){
             debugSql(sqlInfo.getSql());
@@ -409,6 +406,7 @@ public class EasyDB {
      * @param strCondition
      */
     public static void updateByCondition(Object entity,String strCondition){
+        checkTableExist(entity.getClass());
         SqlInfo sqlInfo = SqlUtils.updateByCondition(entity,strCondition);
         if (sqlInfo != null){
             debugSql(sqlInfo.getSql());
@@ -423,6 +421,7 @@ public class EasyDB {
      * @param entity
      */
     public static void deleteById(Object entity){
+        checkTableExist(entity.getClass());
         String sql = SqlUtils.deleteById(entity);
         if (sql == null)throw new NullPointerException("该表木有ID主键哦");
         debugSql(sql);
@@ -435,6 +434,7 @@ public class EasyDB {
      * @param clazz
      */
     public static void deleteAll(Class clazz){
+        checkTableExist(clazz);
         db.delete(ClassUtils.getTableName(clazz),null,null);
         debugSql("已清除" + ClassUtils.getTableName(clazz) + "的所有数据");
     }
@@ -453,6 +453,61 @@ public class EasyDB {
         if(isDebug) {
             Log.d(TAG,">>>>>>  " + sql);
         }
+    }
+
+    /**
+     * 检查表是否存在，如果不存在则创建
+     * @param clazz
+     */
+    private static void checkTableExist(Class<?> clazz)
+    {
+        if (!tableIsExist(TableInfo.get(clazz)))
+        {
+            String sql = SqlUtils.createTable(clazz);
+            debugSql(sql);
+            db.execSQL(sql);
+        }
+    }
+
+    private static boolean tableIsExist(TableInfo table)
+    {
+        if (table.isCheckDatabese()) {
+            return true;
+        }
+        Cursor cursor = null;
+        try
+        {
+            String sql = "SELECT COUNT(*) AS c FROM sqlite_master WHERE type ='table' AND name ='" + table.getTableName() + "' ";
+            debugSql(sql);
+            cursor = db.rawQuery(sql, null);
+            if ((cursor != null) && (cursor.moveToNext()))
+            {
+                int count = cursor.getInt(0);
+                if (count > 0)
+                {
+                    table.setCheckDatabese(true);
+                    return true;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if (cursor != null) {
+                cursor.close();
+            }
+            cursor = null;
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        cursor = null;
+
+
+        return false;
     }
 
 
