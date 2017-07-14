@@ -1,6 +1,7 @@
 package com.easydb.mobile.easydb;
 
 import com.easydb.mobile.easydb.bean.House;
+import com.easydb.mobile.easydb.bean.User;
 
 import org.junit.Test;
 
@@ -82,5 +83,19 @@ public class ExampleUnitTest {
                 }
             }
         }
+    }
+
+
+    @Test
+    public void testObject(){
+        User user = new User(1,"lisan",6);
+        System.out.println("设置前打印=" + user.toString());
+        setUserHouseId(user,8);
+        System.out.println("设置后打印=" + user.toString());
+    }
+
+    public void setUserHouseId(User user,int houseId){
+        user.setHouseId(houseId);
+        System.out.println("设置中打印=" + user.toString());
     }
 }
